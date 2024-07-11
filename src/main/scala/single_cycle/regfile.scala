@@ -6,12 +6,12 @@ class regfile extends Module {
   val io = IO(new Bundle {
     val readAddr1 = Input(UInt(5.W)) // rs1
     val readAddr2 = Input(UInt(5.W)) // rs2
-    val writeAddr = Input(UInt(5.W)) // rd addr
+    val writeAddr = Input(UInt(5.W)) // rd (address)
 
     val writeData = Input(UInt(32.W))
-    val writeEnable = Input(Bool())
-    val rs1 = Output(UInt(32.W))
-    val rs2 = Output(UInt(32.W))
+    val writeEnable = Input(Bool()) 
+    val rs1 = Output(UInt(32.W)) // rs1
+    val rs2 = Output(UInt(32.W)) // rs2
   })
 
   val regFile = RegInit(VecInit(Seq.fill(32)(0.U(32.W)))) 

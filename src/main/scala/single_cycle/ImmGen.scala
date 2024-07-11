@@ -17,11 +17,11 @@ class ImmGen extends Module {
   val opcode = io.instr(6, 0)
 
   switch(opcode) {
-    is("b0010011".U) { // I-type
+    is("b0010011".U) { // I/ load-type
       wiree := Cat(Fill(20, io.instr(31)), io.instr(31, 20)).asSInt()
       io.imm_val := wiree
     }
-    is("b0100011".U) { // S-type
+    is("b0100011".U) { // Store-type
       wiree := Cat(Fill(20, io.instr(31)), io.instr(31), io.instr(30, 25), io.instr(11, 7)).asSInt()
       io.imm_val := wiree
     }

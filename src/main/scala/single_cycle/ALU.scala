@@ -16,8 +16,8 @@ object alu_op{
 }
 import alu_op._
 class ALUI_O extends Bundle with Configg {
-    val A = Input(UInt(32.W))
-    val B = Input(UInt( 32.W))
+    val in_A = Input(UInt(32.W))
+    val in_B = Input(UInt( 32.W))
     val alu_Op = Input(UInt(4.W) )
     val out = Output(UInt(32.W))
     val sum = Output(UInt(32.W))
@@ -25,49 +25,51 @@ class ALUI_O extends Bundle with Configg {
 }
 class ALU extends Module with Configg{
     val io= IO(new ALUI_O)
-    val sum = io.A + Mux(io.alu_Op(0),-io.B,io.B)
+    val sum = io.in_A + Mux(io.alu_Op(0),-io.in_B, io.in_B)
 
-    val cmp= Mux(io.A(XLEN-1) === io.B(XLEN-1), sum(XLEN-1),Mux(io.alu_Op(1), io.B(XLEN-1) , io.A(XLEN-1)))
+    val cmp= Mux(io.A(XLEN-1) === io.in_B(XLEN-1), sum(XLEN-1),Mux(io.alu_Op(1), io.in_B(XLEN-1) , io.in_A(XLEN-1)))
     
-    val shamt = io.B(4 ,0).asUInt
+    val shamt = io.in_B(4 ,0).asUInt  // Shift amount from input B
 
-    val shin = Mux(io.alu_Op(3), io.A, Reverse(io.A))
+    val shin = Mux(io.alu_Op(3), io.in_A, Reverse(io.in_A))
 
     val shiftr = (Cat(io.alu_Op(0) && shin(XLEN-1), shin).asSInt>>shamt)(XLEN-1 , 0)
 
-    val shiftl = Reverse(shiftr)
-    io.out := 0.U
-    io.sum :=0.U
+    val shiftl = Reverse(shiftr)  // Shift left logical based on alu_op
+
+    io.out := 0.U // default value 0
+    io.sum :=0.U  // default value 0
+
     switch(io.alu_Op){
-        is(ALU_ADD){
+        is(ALU_ADD){ // add. addi 
             io.out:= sum
         }
-        is(ALU_SUB){
+        is(ALU_SUB){ // sub
             io.out:= sum
         }
-        is(ALU_SLT){
+        is(ALU_SLT){ // slt
             io.out:= cmp
         }
-        is(ALU_SLTU){
+        is(ALU_SLTU){ //sltu
             io.out:= cmp
         }
-        is(ALU_SRA){
+        is(ALU_SRA){ // sra
             io.out:=shiftr
         }
-        is(ALU_SRL){
+        is(ALU_SRL){ // srl
             io.out:=shiftr
         }
-        is(ALU_SLL){
+        is(ALU_SLL){ // sll
             io.out:=shiftl
         }
-        is(ALU_AND){
-            io.out:=(io.A & io.B)
+        is(ALU_AND){ // and
+            io.out:=(io.in_A & io.in_B)
         }
-        is(ALU_OR){
-            io.out:=(io.A | io.B)
+        is(ALU_OR){ // or
+            io.out:=(io.in_A | io.in_B)
         }
-        is(ALU_XOR){
-            io.out:=(io.A ^ io.B)
+        is(ALU_XOR){ // xor
+            io.out:=(io.in_A ^ io.in_B)
         }
         }
         io.sum := sum

@@ -24,9 +24,10 @@ class Decoder extends Module {
   immGen.instr := io.instruction // input of immgen := input of decoder 
 
 
-  val opcode = io.instruction(6, 0)
+  val opcode = io.instruction(6, 0) // op code for instructions
   val func3 = io.instruction(14, 12)
   val func7 = io.instruction(31, 25)
+
    // Connect outputs based on opcode
   io.imm := immGen.imm_val // output of decoder := output of immgen
 
