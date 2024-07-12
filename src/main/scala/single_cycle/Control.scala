@@ -13,6 +13,7 @@ class Control extends Module {
     val memToReg = Output(Bool()) // write data from memory or ALU to the register file
     val aluImm = Output(Bool())   // rs2 or immediate for alu
     val branchfun3 = Output(UInt(3.W)) // branch fun 3 for branch alu
+    val btaken = Input(Bool())
   })
 
   io.regWrEn := 0.B
