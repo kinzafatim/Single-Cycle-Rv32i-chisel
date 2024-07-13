@@ -3,11 +3,12 @@ import chisel3._
 import chisel3.util._
 class Datamem extends Module {
   val io = IO(new Bundle{
-    val addr = Input(UInt(32.W))   // Address to read/write
+    val addr      = Input(UInt(32.W))   // Address to read/write
     val writeData = Input(UInt(32.W))  // Data to write
-    val memRead = Input(Bool())    // Enable memory read
-    val memWrite = Input(Bool())     // Enable memory write
-    val readData = Output(UInt(32.W))  // Data read from memory
+    val memRead   = Input(Bool())    // Enable memory read
+    val memWrite  = Input(Bool())     // Enable memory write
+    
+    val readData  = Output(UInt(32.W))  // Data read from memory
   })
   val mem = Mem(1024, UInt(32.W))
   io.readData := 0.U // default value

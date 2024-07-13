@@ -6,12 +6,13 @@ import chiseltest._
 import chiseltest.experimental.TestOptionBuilder . _
 class Alutest extends FreeSpec with ChiselScalatestTester {
 "ALU Test" in {
-    test(new Alutest){ x =>
-    x.io.in_A.poke(1.S)
-    x.io.in_B.poke(2.S)
-    x.io.alu_op.poke(0.U)
-    x.clock.step(1)
-    x.io.out.expect(3.S)
+    test(new ALU){ x =>
+    x.io.in_A.poke(10.S)
+    x.io.in_B.poke(1.S)
+    x.io.alu_Op.poke(1.U)
+    x.clock.step(10)
+    x.io.out.expect(9.S)
+    x.io.sum.expect(9.S)
     }
 }
 }

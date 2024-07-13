@@ -10,6 +10,7 @@ class regfile extends Module {
 
     val writeData = Input(UInt(32.W))
     val writeEnable = Input(Bool()) 
+    
     val rs1 = Output(UInt(32.W)) // rs1
     val rs2 = Output(UInt(32.W)) // rs2
   })

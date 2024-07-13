@@ -6,10 +6,11 @@ import chisel3.experimental.BundleLiterals._
 
 class pctest extends FreeSpec with ChiselScalatestTester {
   "Program counter" in {
-    test(new pc){ x =>
-      //  a.io.addr.poke(4.U)
-       x.clock.step()
-       x.io.pc_out.expect(.U)
+    test(new Pc){ x =>
+        x.io.pcsel.poke(0.B)
+        x.io.aluout.poke(4.U)
+        x.clock.step(1)
+        x.io.pc_out.expect(4.U)
        
     } 
   }

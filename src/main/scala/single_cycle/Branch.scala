@@ -14,9 +14,8 @@ import branch._
 class LM_IO_Interface_BranchControl extends Bundle {
     val fnct3 = Input(UInt(3.W))
     val branch= Input(Bool())
-    val x1 = Input(UInt(32.W))
-    val x2 = Input(UInt(32.W))
-
+    val x1 = Input(SInt(32.W))
+    val x2 = Input(SInt(32.W))
     val br_taken = Output(Bool())
 }
 class Branch extends Module {
