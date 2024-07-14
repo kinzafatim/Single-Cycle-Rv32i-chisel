@@ -43,12 +43,12 @@ class Control extends Module {
   val func3 = io.instruction(14, 12)
   val func7 = io.instruction(31, 25)
 
-//   // Instantiate ImmGen module
-//   val immGen = Module(new ImmGen)
-//   immGen.instr := io.instruction // Connect instruction input to ImmGen
+  // Instantiate ImmGen module
+  val immGen = Module(new ImmGen)
+  immGen.instr := io.instruction // Connect instruction input to ImmGen
   
-//   // Connect outputs based on opcode
-//   io.imm := immGen.imm_val // Connect imm output from ImmGen
+  // Connect outputs based on opcode
+  io.imm := immGen.imm_val // Connect imm output from ImmGen
 
   switch(opcode) {
     is("b0110011".U) { // R-type instructions
