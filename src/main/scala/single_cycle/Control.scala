@@ -17,7 +17,7 @@ class Control extends Module {
     val branch     = Output(Bool())   // Indicates branch instruction
     val memRead    = Output(Bool())  // Enables reading data from memory
     val memWrite   = Output(Bool()) // Enables writing data to memory
-    val memToReg   = Output(Bool()) // Write data from memory or ALU to regfile
+    val memToReg   = Output(Bool()) // (load)Write data from memory or ALU to regfile
     val aluImm     = Output(Bool())   // Selects rs2 or immediate for ALU
     val branchfun3 = Output(UInt(3.W)) // Branch fun3 for branch ALU
     val pcsel      = Output(Bool()) 
@@ -76,7 +76,7 @@ class Control extends Module {
       io.rs2 := 0.U
       io.regWrEn := 1.B
       io.memRead := 1.B
-      io.memToReg := 1.B
+      io.memToReg := 1.B // use datamemory
       io.aluImm := 1.B
       io.pcsel := 0.B
     }

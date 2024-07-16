@@ -43,7 +43,7 @@ class RV32I extends Module {
     regFile_Module.io.readAddr1 := control_Module.io.rs1
     regFile_Module.io.readAddr2 := control_Module.io.rs2
     regFile_Module.io.writeAddr := control_Module.io.rd
-    regFile_Module.io.writeData := // not sure Mux(control_Module.io.memToReg, datamem_Module.io.addr, alu_Module.io.out)
+    regFile_Module.io.writeData := Mux(control_Module.io.memToReg, datamem_Module.io.readData, alu_Module.io.out)
     regFile_Module.io.writeEnable := control_Module.io.regWrEn
     
     // Alu connections
@@ -52,8 +52,8 @@ class RV32I extends Module {
     alu_Module.io.alu_Op := control_Module.io.aluOP
 
     // Data memory connections
-   // datamem_Module.io.addr := alu_Module.io.out 
-    //datamem_Module.io.writeData := regFile_Module.io.rs2
+    datamem_Module.io.addr := alu_Module.io.out 
+    datamem_Module.io.writeData := regFile_Module.io.rs2 // store instrcution
     datamem_Module.io.memRead := control_Module.io.memRead
     datamem_Module.io.memWrite := control_Module.io.memWrite
 
