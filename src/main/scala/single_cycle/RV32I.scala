@@ -13,23 +13,21 @@ class RV32I extends Module {
     val branch_Module    = Module(new Branch)
     val control_Module   = Module(new Control)
     val datamem_Module   = Module(new Datamem)
-    val decoder_Module   = Module(new Decoder)
     val immdGen_Module   = Module(new ImmGen)
-    val instr_mem_Module = Module(new Instr_mem)
+    val instruction_mem_Module = Module(new Instr_mem)
     val pc_Module        = Module(new Pc)
     val regFile_Module   = Module(new regfile)
     
     //         inputs       :=         outputs
-
     // Instruction memory fetch
-    instr_mem_Module.io.addr := pc_Module.io.pc_out
+    instruction_mem_Module.io.addr := pc_Module.io.pc_out
     
     // pc connections
-    pc_Module.io.instruction := instr_mem_Module.io.inst
-    pc_Module.pcsel := control_Module.io.pcsel
-    pc_Module.aluout := alu_Module.io.out
+    // pc_Module.io.instruction := instruction_mem_Module.io.instruction
+    pc_Module.io.pcsel := control_Module.io.pcsel
+    pc_Module.io.aluout := alu_Module.io.out
 
-    control_Module.io.instruction:= instr_mem_Module.io.inst
+    control_Module.io.instruction:= instruction_mem_Module.io.instruction
     control_Module.io.btaken := branch_Module.io.br_taken
 
     // branch
@@ -53,7 +51,7 @@ class RV32I extends Module {
 
     // Data memory connections
     datamem_Module.io.addr := alu_Module.io.out 
-    datamem_Module.io.writeData := regFile_Module.io.rs2 // store instrcution
+    datamem_Module.io.writeData := regFile_Module.io.rs2 // store instruction
     datamem_Module.io.memRead := control_Module.io.memRead
     datamem_Module.io.memWrite := control_Module.io.memWrite
 

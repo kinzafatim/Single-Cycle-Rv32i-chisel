@@ -12,6 +12,6 @@ class instr_memtest extends FreeSpec with ChiselScalatestTester {
         
         x.clock.step(10)
 
-        x.io.inst.expect(0.U)
+        x.io.instruction.expect(0.U)
     }}
     }

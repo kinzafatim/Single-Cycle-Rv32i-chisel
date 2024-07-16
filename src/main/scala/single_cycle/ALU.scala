@@ -16,18 +16,18 @@ object alu_op {
 }
 
 import alu_op._
-class ALUI_O extends Bundle {
-  val in_A = Input(SInt(32.W))
-  val in_B = Input(SInt(32.W))
-  val alu_Op = Input(UInt(4.W))
-  val out = Output(SInt(32.W))
-  val sum = Output(SInt(32.W))
-}
+
 class ALU extends Module {
-  val io = IO(new ALUI_O)
+  val io = IO(new Bundle{
+    val in_A = Input(SInt(32.W))
+    val in_B = Input(SInt(32.W))
+    val alu_Op = Input(UInt(4.W))
+    val out = Output(SInt(32.W))
+    val sum = Output(SInt(32.W))
+  })
   // add, sub 
   val sum = io.in_A + Mux(io.alu_Op(0), (-io.in_B), io.in_B)
-  // Comparison for SLT and SLTU instructions
+  // Comparison for SLT and SLTU instructionuctions
   val cmp = Mux(io.in_A(31) === io.in_B(31), sum(31), 
                 Mux(io.alu_Op(1), io.in_B(31), io.in_A(31)))
   // Shift amount

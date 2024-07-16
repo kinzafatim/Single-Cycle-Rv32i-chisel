@@ -39,19 +39,18 @@ class Control extends Module {
   io.branchfun3 := 0.U
   io.pcsel := 0.B
 
-  val opcode = io.instruction(6, 0) // opcode for instructions
+  val opcode = io.instruction(6, 0) // opcode for instruction
   val func3 = io.instruction(14, 12)
   val func7 = io.instruction(31, 25)
 
   // Instantiate ImmGen module
   val immGen = Module(new ImmGen)
-  immGen.instr := io.instruction // Connect instruction input to ImmGen
-  
-  // Connect outputs based on opcode
-  io.imm := immGen.imm_val // Connect imm output from ImmGen
+  immGen.io.instruction := io.instruction // Connect instruction input to ImmGen
+  io.imm := immGen.io.imm_val // Connect imm output from ImmGen
+
 
   switch(opcode) {
-    is("b0110011".U) { // R-type instructions
+    is("b0110011".U) { // R-type instruction
       io.aluOP := Cat(func3, func7(5))
       io.rs1 := io.instruction(19, 15)
       io.rs2 := io.instruction(24, 20)
@@ -60,7 +59,7 @@ class Control extends Module {
       io.aluImm := 0.B
       io.pcsel := 0.B
     }
-    is("b0010011".U) { // I-type instructions
+    is("b0010011".U) { // I-type instruction
       io.aluOP := Cat(func3, 0.U)
       io.rs1 := io.instruction(19, 15)
       io.rd := io.instruction(11, 7)
@@ -69,7 +68,7 @@ class Control extends Module {
       io.aluImm := 1.B
       io.pcsel := 0.B
     }
-    is("b0000011".U) { // Load instructions
+    is("b0000011".U) { // Load instruction
       io.aluOP := Cat(func3, 0.U)
       io.rs1 := io.instruction(19, 15)
       io.rd := io.instruction(11, 7)
@@ -80,7 +79,7 @@ class Control extends Module {
       io.aluImm := 1.B
       io.pcsel := 0.B
     }
-    is("b0100011".U) { // Store instructions
+    is("b0100011".U) { // Store instruction
       io.aluOP := Cat(func3, 0.U)
       io.rs1 := io.instruction(19, 15)
       io.rs2 := io.instruction(24, 20)
@@ -89,7 +88,7 @@ class Control extends Module {
       io.aluImm := 1.B
       io.pcsel := 0.B
     }
-    is("b1100011".U) { // Branch instructions
+    is("b1100011".U) { // Branch instruction
       io.aluOP := Cat(func3, 0.U)
       io.rs1 := io.instruction(19, 15)
       io.rs2 := io.instruction(24, 20)
