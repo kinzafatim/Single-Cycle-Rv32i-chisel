@@ -4,7 +4,6 @@ import chisel3.util._
 
 class RV32I extends Module {
     val io = IO(new Bundle{
-        val instruction = Output(UInt(32.W))
         val out = Output(SInt(32.W))
     })
     io.out := 0.S
@@ -30,7 +29,6 @@ class RV32I extends Module {
     pc_Module.pcsel := control_Module.io.pcsel
     pc_Module.aluout := alu_Module.io.out
 
-
     control_Module.io.instruction:= instr_mem_Module.io.inst
     control_Module.io.btaken := branch_Module.io.br_taken
 
@@ -39,7 +37,7 @@ class RV32I extends Module {
     branch_Module.io.branch := control_Module.io.branch
     branch_Module.io.x1 := regFile_Module.io.rs1
     branch_Module.io.x2 := regFile_Module.io.rs2
-    // branch_Module := pc.io.out
+    // branch_Module := 
 
     // Register file connections
     regFile_Module.io.readAddr1 := control_Module.io.rs1
@@ -54,8 +52,8 @@ class RV32I extends Module {
     alu_Module.io.alu_Op := control_Module.io.aluOP
 
     // Data memory connections
-    datamem_Module.io.addr := alu_Module.io.out 
-    datamem_Module.io.writeData := regFile_Module.io.rs2
+   // datamem_Module.io.addr := alu_Module.io.out 
+    //datamem_Module.io.writeData := regFile_Module.io.rs2
     datamem_Module.io.memRead := control_Module.io.memRead
     datamem_Module.io.memWrite := control_Module.io.memWrite
 
