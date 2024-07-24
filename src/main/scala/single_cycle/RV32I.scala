@@ -1,58 +1,71 @@
 package single_cycle
+
 import chisel3._
 import chisel3.util._
 
 class RV32I extends Module {
-    val io = IO(new Bundle{
-        val out = Output(SInt(32.W))
-    })
-    io.out := 0.S
+  val io = IO(new Bundle {
+    val out = Output(SInt(32.W))
+    val in = Input(SInt(32.W))
+  })
+  io.out := io.in
 
-    // objects of modules
-    val alu_Module       = Module(new ALU) 
-    val branch_Module    = Module(new Branch)
-    val control_Module   = Module(new Control)
-    val datamem_Module   = Module(new Datamem)
-    val immdGen_Module   = Module(new ImmGen)
-    val instruction_mem_Module = Module(new Instr_mem)
-    val pc_Module        = Module(new Pc)
-    val regFile_Module   = Module(new regfile)
-    
-    //         inputs       :=         outputs
-    // Instruction memory fetch
-    instruction_mem_Module.io.addr := pc_Module.io.pc_out
-    
-    // pc connections
-    // pc_Module.io.instruction := instruction_mem_Module.io.instruction
-    pc_Module.io.pcsel := control_Module.io.pcsel
-    pc_Module.io.aluout := alu_Module.io.out
+  // Module instantiations
+  val alu = Module(new ALU)
+  val branch = Module(new Branch)
+  val control = Module(new Control)
+  val datamem = Module(new Datamem)
+  // val immGen = Module(new ImmGen)
+  val instrMem = Module(new Instr_mem("/home/kinzaa/single cycle/src/main/scala/single_cycle/test.txt"))
+  val pc = Module(new Pc)
+  val regFile = Module(new regfile)
 
-    control_Module.io.instruction:= instruction_mem_Module.io.instruction
-    control_Module.io.btaken := branch_Module.io.br_taken
+  // Instruction memory fetch
+  instrMem.io.addr := pc.io.pc_out
 
-    // branch
-    branch_Module.io.fnct3 := control_Module.io.branchfun3
-    branch_Module.io.branch := control_Module.io.branch
-    branch_Module.io.x1 := regFile_Module.io.rs1
-    branch_Module.io.x2 := regFile_Module.io.rs2
-    // branch_Module := 
+  // PC connections
+  pc.io.pcsel := control.io.pcsel
+  pc.io.aluout := alu.io.out.asUInt
 
-    // Register file connections
-    regFile_Module.io.readAddr1 := control_Module.io.rs1
-    regFile_Module.io.readAddr2 := control_Module.io.rs2
-    regFile_Module.io.writeAddr := control_Module.io.rd
-    regFile_Module.io.writeData := Mux(control_Module.io.memToReg, datamem_Module.io.readData, alu_Module.io.out)
-    regFile_Module.io.writeEnable := control_Module.io.regWrEn
-    
-    // Alu connections
-    alu_Module.io.in_A := regFile_Module.io.rs1
-    alu_Module.io.in_B := Mux(control_Module.io.aluImm, control_Module.io.imm ,regFile_Module.io.rs2)
-    alu_Module.io.alu_Op := control_Module.io.aluOP
+  // Control module connections
+  control.io.instruction := instrMem.io.instruction
+  control.io.btaken := branch.io.br_taken
 
-    // Data memory connections
-    datamem_Module.io.addr := alu_Module.io.out 
-    datamem_Module.io.writeData := regFile_Module.io.rs2 // store instruction
-    datamem_Module.io.memRead := control_Module.io.memRead
-    datamem_Module.io.memWrite := control_Module.io.memWrite
+  // Branch module connections
+  branch.io.fnct3 := control.io.branchfun3
+  branch.io.branch := control.io.branch
+  branch.io.x1 := regFile.io.rs1
+  branch.io.x2 := regFile.io.rs2
 
+  // Register file connections
+  regFile.io.readAddr1 := control.io.rs1
+  regFile.io.readAddr2 := control.io.rs2
+  regFile.io.writeAddr := control.io.rd
+  regFile.io.writeData := Mux(control.io.memToReg, datamem.io.readData, alu.io.out)
+  regFile.io.writeEnable := control.io.regWrEn
+
+  // ALU connections
+  alu.io.in_A := Mux((branch.io.br_taken && control.io.branch) || control.io.jaltype  , pc.io.pc_out.asSInt() , regFile.io.rs1)
+  alu.io.in_B := Mux(control.io.aluImm, control.io.imm, regFile.io.rs2) 
+  alu.io.alu_Op := control.io.aluOP
+
+  // Data memory connections
+  datamem.io.addr := alu.io.out.asUInt
+  datamem.io.writeData := regFile.io.rs2 // store instruction
+  datamem.io.memRead := control.io.memRead
+  datamem.io.memWrite := control.io.memWrite
+
+  when(control.io.jalrtype){ // JALR instruction
+    regFile.io.writeData := pc.io.pc_4out.asSInt
+  }
+
+  when(control.io.luitype) { // LUI instruction
+    regFile.io.writeData := control.io.imm 
+  }
+  
+  when(control.io.auipctype) { // AUIPC instruction
+    regFile.io.writeData := pc.io.pc_out.asSInt + control.io.imm 
+  }
+  
+  io.out := alu.io.out
 }

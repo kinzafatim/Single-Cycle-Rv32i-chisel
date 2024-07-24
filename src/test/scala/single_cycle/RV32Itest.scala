@@ -3,15 +3,15 @@ import chisel3._
 import chisel3.util
 import org.scalatest._
 import chiseltest._
-import chiseltest.experimental.TestOptionBuilder . _
+import chiseltest.experimental.TestOptionBuilder._
 
 class RV32Itest  extends FreeSpec with ChiselScalatestTester {
 "Rv32i Test" in{
-    test( new RV32I){ 
+    test(new RV32I){ 
         x=>
-        x.clock.step(250)
+        x.clock.step(100)
+        x.io.in.poke(0.S)
         x.io.out.expect(0.S)
-
     }
 }
 }

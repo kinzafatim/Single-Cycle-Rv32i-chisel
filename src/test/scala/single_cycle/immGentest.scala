@@ -10,6 +10,6 @@ class immGentest  extends FreeSpec with ChiselScalatestTester {
     test(new ImmGen){ x =>
         x.io.instruction.poke("b00000000000000000010010011".U)
         x.clock.step(10)
-        x.io.imm_val.expect(0.U)
+        x.io.imm_val.expect(0.S)
 
     }}}

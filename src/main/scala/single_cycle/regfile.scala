@@ -8,17 +8,17 @@ class regfile extends Module {
     val readAddr2 = Input(UInt(5.W)) // rs2
     val writeAddr = Input(UInt(5.W)) // rd (address)
 
-    val writeData = Input(UInt(32.W))
+    val writeData = Input(SInt(32.W))
     val writeEnable = Input(Bool()) 
     
-    val rs1 = Output(UInt(32.W)) // rs1
-    val rs2 = Output(UInt(32.W)) // rs2
+    val rs1 = Output(SInt(32.W)) // rs1
+    val rs2 = Output(SInt(32.W)) // rs2
   })
 
-  val regFile = RegInit(VecInit(Seq.fill(32)(0.U(32.W)))) 
+  val regFile = RegInit(VecInit(Seq.fill(32)(0.S(32.W)))) 
 
-  io.rs1 := Mux(io.readAddr1 === 0.U, 0.U, regFile(io.readAddr1)) // x0=0
-  io.rs2 := Mux(io.readAddr2 === 0.U, 0.U, regFile(io.readAddr2)) // x0=0
+  io.rs1 := Mux(io.readAddr1 === 0.U, 0.S, regFile(io.readAddr1)) // x0=0
+  io.rs2 := Mux(io.readAddr2 === 0.U, 0.S, regFile(io.readAddr2)) // x0=0
 
   when(io.writeEnable === 1.U) {
     regFile(io.writeAddr) := io.writeData

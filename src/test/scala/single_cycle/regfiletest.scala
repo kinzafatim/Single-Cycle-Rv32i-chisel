@@ -3,7 +3,7 @@ import chisel3._
 import chisel3.util
 import org.scalatest._
 import chiseltest._
-import chiseltest.experimental.TestOptionBuilder . _
+import chiseltest.experimental.TestOptionBuilder._
 
 class regfiletest extends FreeSpec with ChiselScalatestTester {
 "Register file Test" in{
@@ -13,12 +13,12 @@ class regfiletest extends FreeSpec with ChiselScalatestTester {
         x.io.readAddr2.poke(25.U)
         x.io.writeAddr.poke(26.U)
 
-        x.io.writeData.poke(42.U)
+        x.io.writeData.poke(42.S)
         x.io.writeEnable.poke(1.B)
         
         x.clock.step(100)
 
-        x.io.rs1.expect(0.U)
-        x.io.rs2.expect(0.U)
+        x.io.rs1.expect(0.S)
+        x.io.rs2.expect(0.S)
     }}
     }
