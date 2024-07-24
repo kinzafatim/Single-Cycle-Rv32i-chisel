@@ -9,7 +9,7 @@ class RV32Itest  extends FreeSpec with ChiselScalatestTester {
 "Rv32i Test" in{
     test(new RV32I){ 
         x=>
-        x.clock.step(100)
+        x.clock.step(120)
         x.io.in.poke(0.S)
         x.io.out.expect(0.S)
     }
